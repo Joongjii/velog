@@ -5,6 +5,7 @@ on:
   push:
       branches:
         - main  # 또는 워크플로우를 트리거하고 싶은 브랜치 이름
+  workflow_dispatch:
   schedule:
     # 테스트를 원한다면, `한국 표준시 = UTC + 9` 참고해서 시간 수정한 후 테스트해보기
     - cron: '0 0 * * *'  # 매일 자정에 실행, UTC 협정 세계시 기준 (한국 시간 기준 오전 9시)
@@ -17,7 +18,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
+    - name: Set time zone
+      run: |
+            sudo ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+            echo "Asia/Seoul" | sudo tee /etc/timezone
+            date
     - name: Push changes
       run: |
         git config --global user.name 'github-actions[bot]'
